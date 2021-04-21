@@ -17,8 +17,10 @@ create controlled and uncontrolled radio
  */
 
 const URL = 'https://jsonplaceholder.typicode.com';
+const listEndpoints = ['posts', 'comments', 'albums', 'todos'];
 
-function App() {
+// control
+/*function App() {
   const [inputs, setInputs] = useState({
     endpoint: '',
     id: '',
@@ -39,6 +41,14 @@ function App() {
   }
 
   const onSubmit = () => {
+    if (!listEndpoints.includes(inputs.endpoint)) {
+      setInputs({...inputs, endpoint: ''});
+      return alert('Error!');
+    }
+    if (!Number(inputs.id) || Number(inputs.id) < 1 || Number(inputs.id) > 100) {
+      setInputs({...inputs, id: ''});
+      return alert('Error!');
+    }
     fetchList();
   }
 
@@ -50,18 +60,39 @@ function App() {
              type={'text'} name={'id'} placeholder={'id'} />
       <button onClick={onSubmit}>submit</button>
       <hr />
-      {!!item && (
-        <div key={item.id}>
+      {!!item && (<div key={item.id}>
           <h3>{item.id} - {item.title} - {item.name}</h3>
           <p>{item.body}</p>
-        </div>
-      )}
+        </div>)}
       <hr />
       <div>
-        {
-          list.map(value => <h3 key={value.id}>{value.id} - {value.title} - {value.name}</h3>)
-        }
+        { list.map(value => <h3 key={value.id}>{value.id} - {value.title} - {value.name}</h3>) }
       </div>
+    </div>
+  );
+}*/
+
+// uncontrol
+function App() {
+  const [list, setList] = useState([]);
+  const [item, setItem] = useState(null);
+
+  const fetchList = async () => {
+    const resp = await fetch(`${URL}/`);
+    const json = await resp.json();
+  }
+
+  const onSubmit = () => {
+    
+  }
+
+  return (
+    <div className='App'>
+      <form onSubmit={onSubmit}>
+        <input type={'text'} name={'endpoint'} placeholder={'endpoint'} />
+        <input type={'text'} name={'id'} placeholder={'id'} />
+        <button type={'submit'}>submit</button>
+      </form>
     </div>
   );
 }
