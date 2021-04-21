@@ -1,4 +1,4 @@
-import React, {Component, useEffect, useRef, useState} from "react";
+import React, {Component, createRef, useEffect, useRef, useState} from "react";
 import './App.css';
 
 /*
@@ -123,7 +123,7 @@ const listEndpoints = ['posts', 'comments', 'albums', 'todos'];
 } */
 
 // control
-class App extends Component {
+/*class App extends Component {
   state = {
     endpoint: '',
     id: '',
@@ -165,6 +165,61 @@ class App extends Component {
         <input value={this.state.id} onChange={this.updateUserChoice}
                type={'text'} name={'id'} placeholder={'id'} />
         <button onClick={this.onSubmit}>submit</button>
+        <hr />
+        {!!this.state.item && ( <div key={this.state.item.id}>
+          <h3>{this.state.item.id} - {this.state.item.title} - {this.state.item.name}</h3>
+          <p>{this.state.item.body}</p>
+        </div> )}
+        <hr />
+        <div>
+          { this.state.list.map(value => <h3 key={value.id}>{value.id} - {value.title} - {value.name}</h3>) }
+        </div>
+      </div>
+    );
+  }
+} */
+
+// uncontrol
+class App extends Component {
+  endpoint = createRef();
+  id = createRef();
+
+  state = {
+    list: [],
+    item: null,
+  }
+
+  fetchList = async () => {
+    const resp = await fetch(`${URL}/${this.endpoint.current.value}/${this.id.current.value}`);
+    const json = await resp.json();
+
+    !!this.id.current.value ? this.setState({...this.state, item: json})
+      : this.setState({...this.state, list: json});
+  }
+
+  onSubmit = (e) => {
+    e.preventDefault();
+
+    if (!listEndpoints.includes(this.endpoint.current.value)) {
+      this.endpoint.current.value = '';
+      return alert('Error in endpoit!');
+    }
+    if ((!Number(this.id.current.value) || Number(this.id.current.value) < 1 || Number(this.id.current.value) > 100)
+      && this.id.current.value !== '') {
+      this.id.current.value = '';
+      return alert('Error in id!');
+    }
+    this.fetchList();
+  }
+
+  render() {
+    return (
+      <div className='App'>
+        <form onSubmit={this.onSubmit}>
+          <input ref={this.endpoint} type={'text'} name={'endpoint'} placeholder={'endpoint'} />
+          <input ref={this.id} type={'text'} name={'id'} placeholder={'id'} />
+          <button type={'submit'}>submit</button>
+        </form>
         <hr />
         {!!this.state.item && ( <div key={this.state.item.id}>
           <h3>{this.state.item.id} - {this.state.item.title} - {this.state.item.name}</h3>
