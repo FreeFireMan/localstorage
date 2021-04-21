@@ -235,7 +235,7 @@ const listEndpoints = ['posts', 'comments', 'albums', 'todos'];
 } */
 
 // control
-function App() {
+/*function App() {
   const [state, setState] = useState({
     select: 'Select 1',
     checkbox: [],
@@ -274,6 +274,50 @@ function App() {
       <button onClick={onSubmit}>submit</button>
     </div>
   );
+} */
+
+class App extends Component {
+  state = {
+    select: 'Select1',
+    checkbox: [],
+    radio: '',
+  }
+
+  updateUserChoice = (e) => {
+    const {target: {name, value}} = e;
+
+    if (name === 'checkbox') {
+      return this.setState({...this.state, checkbox: [...this.state.checkbox, value]});
+    }
+    this.setState({...this.state, [name]: value});
+  }
+
+  onSubmit = () => {
+    alert(JSON.stringify(this.state, null, 2));
+  }
+
+  render() {
+    return (
+      <div className={'App'}>
+        <select onChange={this.updateUserChoice} name={'select'}>
+          <option>Select 1</option>
+          <option>Select 2</option>
+        </select>
+        <br />
+        <input value={'checkbox1'} onChange={this.updateUserChoice} type={'checkbox'} name={'checkbox'} />
+        <label>Checkbox1</label>
+        <input value={'checkbox2'} onChange={this.updateUserChoice} type={'checkbox'} name={'checkbox'} />
+        <label>Checkbox2</label>
+        <br />
+        <input value={'radio1'} onChange={this.updateUserChoice} type={'radio'} name={'radio'} />
+        <label>Radio1</label>
+        <input value={'radio2'} onChange={this.updateUserChoice} type={'radio'} name={'radio'} />
+        <label>Radio2</label>
+        <br />
+        <button onClick={this.onSubmit}>submit</button>
+      </div>
+    );
+  }
 }
 
 export default App;
