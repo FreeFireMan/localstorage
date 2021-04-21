@@ -180,7 +180,7 @@ const listEndpoints = ['posts', 'comments', 'albums', 'todos'];
 } */
 
 // uncontrol
-class App extends Component {
+/*class App extends Component {
   endpoint = createRef();
   id = createRef();
 
@@ -232,6 +232,48 @@ class App extends Component {
       </div>
     );
   }
+} */
+
+// control
+function App() {
+  const [state, setState] = useState({
+    select: 'Select 1',
+    checkbox: [],
+    radio: '',
+  });
+
+  const updateUserChoice = (e) => {
+    const {target: {name, value}} = e;
+    if (name === 'checkbox'){
+      return setState({...state, checkbox: [...state.checkbox, value]});
+    }
+    setState({...state, [name]: value});
+  }
+
+  const onSubmit = () => {
+    alert(JSON.stringify({state}, null, 2));
+  }
+
+  return (
+    <div className={'App'}>
+      <select onChange={updateUserChoice} name={'select'}>
+        <option>Select 1</option>
+        <option>Select 2</option>
+      </select>
+      <br />
+      <input value={'checkbox1'} onChange={updateUserChoice} type={'checkbox'} name={'checkbox'} />
+      <label>Checkbox1</label>
+      <input value={'checkbox2'} onChange={updateUserChoice} type={'checkbox'} name={'checkbox'} />
+      <label>Checkbox2</label>
+      <br />
+      <input value={'radio1'} onChange={updateUserChoice} type={'radio'} name={'radio'} />
+      <label>Radio1</label>
+      <input value={'radio2'} onChange={updateUserChoice} type={'radio'} name={'radio'} />
+      <label>Radio2</label>
+      <br />
+      <button onClick={onSubmit}>submit</button>
+    </div>
+  );
 }
 
 export default App;
