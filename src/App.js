@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {Component, useEffect, useRef, useState} from "react";
 import './App.css';
 
 /*
@@ -73,7 +73,7 @@ const listEndpoints = ['posts', 'comments', 'albums', 'todos'];
 } */
 
 // uncontrol
-function App() {
+/*function App() {
   const endpoint = useRef();
   const id = useRef();
 
@@ -120,6 +120,63 @@ function App() {
       </div>
     </div>
   );
+} */
+
+// control
+class App extends Component {
+  state = {
+    endpoint: '',
+    id: '',
+    list: [],
+    item: null,
+  }
+
+  fetchList = async () => {
+    const resp = await fetch(`${URL}/${this.state.endpoint}/${this.state.id}`);
+    const json = await resp.json();
+
+    !!this.state.id ? this.setState({...this.state, item: json})
+      : this.setState({...this.state, list: json})
+  }
+
+  updateUserChoice = (e) => {
+    const {target: {name, value}} = e;
+    this.setState({...this.state, [name]: value});
+  }
+
+  onSubmit = () => {
+    if (!listEndpoints.includes(this.state.endpoint)) {
+      this.setState({...this.state, endpoint: ''});
+      return alert('Error!');
+    }
+    if ((!Number(this.state.id) || Number(this.state.id) < 1 || Number(this.state.id) > 100)
+      && this.state.id !== '') {
+      this.setState({...this.state, id: ''});
+      return alert('Error!');
+    }
+    this.fetchList();
+  }
+
+  render() {
+    return (
+      <div className='App'>
+        <input value={this.state.endpoint} onChange={this.updateUserChoice}
+               type={'text'} name={'endpoint'} placeholder={'endpoint'} />
+        <input value={this.state.id} onChange={this.updateUserChoice}
+               type={'text'} name={'id'} placeholder={'id'} />
+        <button onClick={this.onSubmit}>submit</button>
+        <hr />
+        {!!this.state.item && ( <div key={this.state.item.id}>
+          <h3>{this.state.item.id} - {this.state.item.title} - {this.state.item.name}</h3>
+          <p>{this.state.item.body}</p>
+        </div> )}
+        <hr />
+        <div>
+          { this.state.list.map(value => <h3 key={value.id}>{value.id} - {value.title} - {value.name}</h3>) }
+        </div>
+      </div>
+    );
+  }
 }
 
 export default App;
