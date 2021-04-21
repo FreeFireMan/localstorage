@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import './App.css';
 
 /*
@@ -45,7 +45,7 @@ const listEndpoints = ['posts', 'comments', 'albums', 'todos'];
       setInputs({...inputs, endpoint: ''});
       return alert('Error!');
     }
-    if (!Number(inputs.id) || Number(inputs.id) < 1 || Number(inputs.id) > 100) {
+    if ((!Number(inputs.id) || Number(inputs.id) < 1 || Number(inputs.id) > 100) && inputs.id !== '') {
       setInputs({...inputs, id: ''});
       return alert('Error!');
     }
@@ -70,29 +70,54 @@ const listEndpoints = ['posts', 'comments', 'albums', 'todos'];
       </div>
     </div>
   );
-}*/
+} */
 
 // uncontrol
 function App() {
+  const endpoint = useRef();
+  const id = useRef();
+
   const [list, setList] = useState([]);
   const [item, setItem] = useState(null);
 
   const fetchList = async () => {
-    const resp = await fetch(`${URL}/`);
+    const resp = await fetch(`${URL}/${endpoint.current.value}/${id.current.value}`);
     const json = await resp.json();
+
+    !!id.current.value ? setItem(json) : setList(json);
   }
 
-  const onSubmit = () => {
-    
+  const onSubmit = (e) => {
+    e.preventDefault();
+
+    if (!listEndpoints.includes(endpoint.current.value)) {
+      endpoint.current.value = '';
+      return alert('Error!');
+    }
+    if((!Number(id.current.value) || Number(id.current.value) < 1 || Number(id.current.value) > 100)
+      && id.current.value !== '') {
+      id.current.value = '';
+      return alert('Error!');
+    }
+    fetchList();
   }
 
   return (
     <div className='App'>
       <form onSubmit={onSubmit}>
-        <input type={'text'} name={'endpoint'} placeholder={'endpoint'} />
-        <input type={'text'} name={'id'} placeholder={'id'} />
+        <input ref={endpoint} type={'text'} name={'endpoint'} placeholder={'endpoint'} />
+        <input ref={id} type={'text'} name={'id'} placeholder={'id'} />
         <button type={'submit'}>submit</button>
       </form>
+      <hr />
+      {!!item && ( <div key={item.id}>
+          <h3>{item.id} - {item.title} - {item.name}</h3>
+          <p>{item.body}</p>
+        </div> )}
+      <hr />
+      <div>
+        { list.map(value => <h3 key={value.id}>{value.id} - {value.title} - {value.name}</h3>) }
+      </div>
     </div>
   );
 }
