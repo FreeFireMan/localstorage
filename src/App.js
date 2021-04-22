@@ -12,14 +12,31 @@ const TodoProvider = ({children}) => {
     }
     setTodos([newTodo, ...todos]);
   }
+  const [deleteItem, setDeleteItem] = useState([]);
+  const [markItem, setMarkItem] = useState([]);
+  const deleteTodo = (item) => {
+    setDeleteItem([...deleteItem, item]);
+    setTodos(todos.filter(todo => todo !== item));
+    if (markItem.includes(item)) {
+      setMarkItem(markItem.filter(value => value !== item));
+    }
+  }
+  const markAs = (item) => {
+    if (!markItem.includes(item)) {
+      setMarkItem([...markItem, item]);
+    } else {
+      setMarkItem(markItem.filter(value => value !== item));
+    }
+  }
   return (
-    <TodoContext.Provider value={{ todos, addTodo, }}>
+    <TodoContext.Provider value={{ todos, addTodo, deleteItem, deleteTodo, markItem, markAs,}}>
       {children}
     </TodoContext.Provider>
   );
 }
 
 const Header = () => {
+  const {todos, markItem} = useContext(TodoContext);
   return (
     <header>
       <nav>
@@ -27,32 +44,17 @@ const Header = () => {
         <Link to={'/create-todo'}>Add New Todo</Link>
       </nav>
       <div>
-        <span>total: {}</span>
-        <span>active: {}</span>
-        <span>done: {}</span>
+        <span>total: {todos.length}</span>
+        <span>active: {todos.length - markItem.length}</span>
+        <span>done: {markItem.length}</span>
       </div>
     </header>
   );
 }
 
 const TodoList = () => {
-  const {todos} = useContext(TodoContext);
-  const [deleteItem, setDeleteItem] = useState([]);
+  const {todos, deleteItem, deleteTodo, markItem, markAs} = useContext(TodoContext);
   const filteredTodo = todos.filter(todo => !deleteItem.includes(todo));
-  const deleteTodo = (item) => {
-    setDeleteItem([...deleteItem, item]);
-  }
-  const [markItem, setMarkItem] = useState([]);
-  const [isDone, setIsDone] = useState(false);
-  const markAs = (item) => {
-    if (!markItem.includes(item)) {
-      setMarkItem([...markItem, item]);
-      setIsDone(true);
-    } else {
-      setMarkItem(markItem.filter(value => value !== item));
-      setIsDone(false);
-    }
-  }
   return (
     <div>
       <h1>Todo List</h1>
@@ -60,7 +62,7 @@ const TodoList = () => {
         <> {
           filteredTodo.map(value => (
               <div key={value.title + value.descr} style={{
-                textDecoration: markItem.includes(value) ? 'line-through' : '',
+                textDecoration: markItem.includes(value) ? 'line-through' : ''
               }}>
                 <h3>{value.title}</h3>
                 <p>{value.descr}</p>
