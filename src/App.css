@@ -1,3 +1,18 @@
 .App {
   text-align: center;
 }
+
+header {
+  display: flex;
+  justify-content: space-between;
+}
+nav {
+  display: flex;
+  justify-content: space-around;
+  width: 300px;
+}
+header div {
+  display: flex;
+  justify-content: space-around;
+  width: 300px;
+}
