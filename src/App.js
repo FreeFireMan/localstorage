@@ -27,8 +27,8 @@ const Header = () => {
 
 const Products = () => {
   const {products, isLoading} = useSelector(store => store.products);
-  const {wish} = useSelector(store => store.wish);
-  const {card} = useSelector(store => store.card);
+  const {wish, buttonWish} = useSelector(store => store.wish);
+  const {card, buttonCard} = useSelector(store => store.card);
   const dispatch = useDispatch();
   useEffect(() => {
     if (!products.length) {
@@ -45,15 +45,18 @@ const Products = () => {
           <h3>{el.title}</h3>
           <h4>{el.price}</h4>
           <p>{el.description}</p>
-          <button onClick={() => dispatch(
-            !wish.includes(el) ? addToWish(el) : removeFromWish(el)
-          )}
-          style={{background: !wish.includes(el) ? 'green' : ''}}
+          <button onClick={() => {
+            dispatch(
+              !wish.includes(el) ? addToWish(el) : removeFromWish(el)
+            );
+            console.log(wish.includes(el))
+          }}
+          style={{background: !buttonWish ? 'green' : ''}}
           >add to wish</button>
           <button onClick={() => dispatch(
             !card.includes(el) ? addToCard(el) : removeFromCard(el)
           )}
-          style={{background: !card.includes(el) ? 'green' : ''}}
+          style={{background: !buttonCard ? 'green' : ''}}
           >add to card</button>
           <img src={el.image} style={{width: '100%'}} />
           <hr />
