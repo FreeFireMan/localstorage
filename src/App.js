@@ -1,70 +1,9 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import './App.css';
-import {Provider, useDispatch, useSelector} from "react-redux";
+import {Provider} from "react-redux";
 import {store} from './redux';
-import {loadProducts, addToCard, removeFromCard, addToWish, removeFromWish} from './redux/action-creators';
-
-const Header = () => {
-  const {totalWish, totalPriceWish} = useSelector(store => store.wish);
-  const {totalCard, totalPriceCard} = useSelector(store => store.card);
-  return (
-    <header>
-      <h1>Products List</h1>
-      <div style={{display: 'flex', flexDirection: 'column'}}>
-        <div>
-          <span>wish: {totalWish}</span>
-          <span>card: {totalCard}</span>
-        </div>
-        <br />
-        <div>
-          <span>price in wish: {totalPriceWish}</span>
-          <span>price in card: {totalPriceCard}</span>
-        </div>
-      </div>
-    </header>
-  );
-}
-
-const Products = () => {
-  const {products, isLoading} = useSelector(store => store.products);
-  const {wish, buttonWish} = useSelector(store => store.wish);
-  const {card, buttonCard} = useSelector(store => store.card);
-  const dispatch = useDispatch();
-  useEffect(() => {
-    if (!products.length) {
-      dispatch(loadProducts());
-    }
-  }, []);
-  return (
-    <div>
-      {isLoading && (
-        <h2>LOADING...</h2>
-      )}
-      {!isLoading && products.length && products.map(el => (
-        <div key={el.id} style={{width: '60%', margin: "10px auto"}}>
-          <h3>{el.title}</h3>
-          <h4>{el.price}</h4>
-          <p>{el.description}</p>
-          <button onClick={() => {
-            dispatch(
-              !wish.includes(el) ? addToWish(el) : removeFromWish(el)
-            );
-            console.log(wish.includes(el))
-          }}
-          style={{background: !buttonWish ? 'green' : ''}}
-          >add to wish</button>
-          <button onClick={() => dispatch(
-            !card.includes(el) ? addToCard(el) : removeFromCard(el)
-          )}
-          style={{background: !buttonCard ? 'green' : ''}}
-          >add to card</button>
-          <img src={el.image} style={{width: '100%'}} />
-          <hr />
-        </div>
-      ))}
-    </div>
-  );
-}
+import Header from './components/Header';
+import Products from './components/Products';
 
 function App() {
 
