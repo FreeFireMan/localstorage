@@ -1,4 +1,5 @@
 import {createStore, applyMiddleware} from "redux";
+import thunk from "redux-thunk";
 import {reducer} from "./reducer";
 
 import {INC, DEC, RESET, INC_CUSTOM} from './action-types';
@@ -13,7 +14,7 @@ const logger = (store) => (next) => (action) => {
 
 const protectCounter = (store) => (next) => (action) => {
   const actionsForCounter = [INC_CUSTOM, INC, DEC, RESET];
-  const {isAllowedToChange} = store.getState();
+  const {isAllowedToChange} = store.getState().counter;
   if (!isAllowedToChange && actionsForCounter.includes(action.type)) {
     console.log('error');
     return;
@@ -23,10 +24,10 @@ const protectCounter = (store) => (next) => (action) => {
 
 const persister = (store) => (next) => (action) => {
   next(action);
-  const counter = store.getState();
+  const {counter} = store.getState();
   localStorage.setItem('counter', JSON.stringify(counter));
 }
 
-const middlewares = [protectCounter, /*logger,*/ persister];
+const middlewares = [thunk, protectCounter, logger, persister];
 
 export const store = createStore(reducer, applyMiddleware(...middlewares));
