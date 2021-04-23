@@ -2,6 +2,7 @@ import {INC, DEC, RESET, INC_CUSTOM} from '../action-types';
 
 const initialState = {
   counter: 0,
+  isAllowedToChange: true,
 }
 
 export const reducer = (state = initialState, action) => {
