@@ -3,11 +3,13 @@ import './App.css';
 import {Provider, useDispatch, useSelector} from "react-redux";
 import {store} from './redux';
 
-import {ON_USER_LOADED,} from './redux/action-types';
+import {onUsersLoaded, onAddToBad, onRemoveFromBad} from './redux/action-creators';
 
 const PhotosList = () => {
   const dispatch = useDispatch();
   const users = useSelector(({usersReducer: {users} }) => users);
+  const badEmployees = useSelector(({usersReducer: {badEmployees} }) => badEmployees);
+
   const fetchPhotos = async () => {
     const resp = await fetch ('https://dummyapi.io/data/api/user?limit=10', {
       headers: {
@@ -16,17 +18,33 @@ const PhotosList = () => {
     });
     const json = await resp.json();
 
-    console.log(json)
-    dispatch({type: ON_USER_LOADED, payload: json.data});
+    dispatch(onUsersLoaded(json.data));
   }
 
   useEffect(() => {
-    fetchPhotos();
+    if (!users.length) {
+      fetchPhotos();
+    }
   }, []);
 
   return (
     <div>
       <h1>PhotosList</h1>
+      {
+        users.map(el => <img
+          style={{
+            filter: badEmployees.includes(el.id) ? 'blur(3px)' : ''
+          }}
+          onClick={() => {
+            const alreadyInList = badEmployees.includes(el.id);
+            const answer = !badEmployees.includes(el.id) && window.confirm('Are you sure?');
+            if (answer) {
+              return dispatch(onAddToBad(el.id));
+            }
+            alreadyInList && dispatch(onRemoveFromBad(el.id));
+          }}
+          key={el.id} src={el.picture} alt={el.firstName} />)
+      }
     </div>
   );
 }
