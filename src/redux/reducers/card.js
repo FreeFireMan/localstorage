@@ -13,7 +13,7 @@ const reduce = (state = initialState, action) => {
         ...state,
         card: [...state.card, action.payload],
         totalCard: state.totalCard + 1,
-        totalPriceCard: state.totalPriceCard + action.payload,
+        totalPriceCard: state.totalPriceCard + action.payload.price,
       };
     }
     case REMOVE_FROM_CARD: {
@@ -21,7 +21,7 @@ const reduce = (state = initialState, action) => {
         ...state,
         card: state.card.filter(el => el !== action.payload),
         totalCard: state.totalCard - 1,
-        totalPriceCard: state.totalPriceCard + action.payload,
+        totalPriceCard: state.totalPriceCard - action.payload.price,
       };
     }
     default: {
