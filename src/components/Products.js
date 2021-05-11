@@ -29,7 +29,6 @@ const Products = () => {
               !wish.includes(el) ? addToWish(el) : removeFromWish(el)
             )}
                   style={{background: !wish.includes(el) ? 'green' : ''}}>add to wish</button>
-
           <button onClick={() => dispatch(
             !card.includes(el) ? addToCard(el) : removeFromCard(el)
           )}
