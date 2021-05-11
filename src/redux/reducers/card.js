@@ -20,7 +20,7 @@ const reduce = (state = initialState, action) => {
     case REMOVE_FROM_CARD: {
       return {
         ...state,
-        card: state.card.filter(el => el !== action.payload),
+        card: state.card.filter(el => el.id !== action.payload.id),
         totalCard: state.totalCard - 1,
         totalPriceCard: state.totalPriceCard - Math.floor((action.payload.price * 100) /100),
       };

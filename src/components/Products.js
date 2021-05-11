@@ -26,13 +26,13 @@ const Products = () => {
           <h4>{el.price}</h4>
           <p>{el.description}</p>
           <button onClick={() => dispatch(
-              !wish.includes(el) ? addToWish(el) : removeFromWish(el)
+              !wish.some(item => item.id === el.id) ? addToWish(el) : removeFromWish(el)
             )}
-                  style={{background: !wish.includes(el) ? 'green' : ''}}>add to wish</button>
+                  style={{background: !wish.some(item => item.id === el.id) ? 'green' : ''}}>add to wish</button>
           <button onClick={() => dispatch(
-            !card.includes(el) ? addToCard(el) : removeFromCard(el)
+              !card.some(item => item.id === el.id) ? addToCard(el) : removeFromCard(el)
           )}
-                  style={{background: !card.includes(el) ? 'green' : ''}}
+                  style={{background: !card.some(item => item.id === el.id) ? 'green' : ''}}
           >add to card</button>
 
           <img src={el.image} style={{width: '100%'}} />

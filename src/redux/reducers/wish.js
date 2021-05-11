@@ -20,7 +20,7 @@ const reduce = (state = initialState, action) => {
     case REMOVE_FROM_WISH: {
       return {
         ...state,
-        wish: state.wish.filter(el => el !== action.payload),
+        wish: state.wish.filter(el => el.id !== action.payload.id),
         totalWish: state.totalWish - 1,
         totalPriceWish: state.totalPriceWish - Math.floor(action.payload.price),
       };
